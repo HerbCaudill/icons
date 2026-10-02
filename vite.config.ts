@@ -15,7 +15,7 @@ export default defineConfig({
       manifest: {
         name: "Icons",
         short_name: "Icons",
-        description: "A quiet place to find your next icon.",
+        description: "Browse icons and copy their names.",
         start_url: "/",
         display: "standalone",
         background_color: "#fafafa",

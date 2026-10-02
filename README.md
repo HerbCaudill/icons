@@ -4,6 +4,8 @@ A small browser for Tabler, Lucide, and Heroicons. The filter is focused on page
 
 Click an icon to copy its name directly (for example, `arrow-left`). The entire selected collection is shown at once. Search matches every word and ignores case, spaces, hyphens, and underscores. Press `/`, `⌘K`, or `Ctrl K` to focus the filter; press Escape in the filter to clear it.
 
+Use the header controls to resize icons or change their color. The color picker offers Tailwind shades and a custom hex input; the default is `#454545`.
+
 ## Local development
 
 Use Node.js 24 and pnpm. Install dependencies with `pnpm install`, then run `pnpm dev`. The complete app runs at <http://localhost:5179>. No API keys, backend processes, or external services are required.
@@ -18,7 +20,7 @@ The app uses React, TypeScript, Vite, Tailwind CSS, shadcn/ui, and locally bundl
 - `pnpm build` builds the production app.
 - `pnpm preview` serves the production build locally.
 
-The production build includes an installable PWA. After its first online visit finishes caching, the app, fonts, and all three icon sets work offline. The app and complete icon catalog use about 665 KB of compressed JavaScript on the first load. Clipboard copying requires a secure browser context, such as HTTPS or localhost.
+The production build includes an installable PWA. After its first online visit finishes caching, the app, fonts, and all three icon sets work offline. The app and complete icon catalog use about 716 KB of compressed JavaScript on the first load. Clipboard copying requires a secure browser context, such as HTTPS or localhost.
 
 ## Icon licenses
 

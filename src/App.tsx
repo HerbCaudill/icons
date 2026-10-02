@@ -3,6 +3,7 @@ import { Icon } from "@iconify/react"
 import { getIconData } from "@iconify/utils"
 import { Button } from "@/components/ui/button"
 import { Glyph } from "@/components/Glyph"
+import { ColorPicker } from "@/components/ColorPicker"
 import { iconNames, iconSets } from "@/lib/constants"
 import { filterIcons } from "@/lib/filterIcons"
 import { readIconSet } from "@/lib/readIconSet"
@@ -121,15 +122,7 @@ export function App(
           </span>
         </div>
         <div className="header-controls">
-          <label className="color-picker" htmlFor="icon-color">
-            Icon color
-            <input
-              id="icon-color"
-              type="color"
-              value={iconColor}
-              onChange={event => setIconColor(event.target.value)}
-            />
-          </label>
+          <ColorPicker value={iconColor} onChange={setIconColor} />
           <div className="size-picker">
             <label htmlFor="icon-size">Icon size</label>
             <input

@@ -2,6 +2,8 @@ import tabler from "@iconify-json/tabler/icons.json"
 import lucide from "@iconify-json/lucide/icons.json"
 import heroicons from "@iconify-json/heroicons/icons.json"
 import type { IconifyJSON } from "@iconify/types"
+import colors from "tailwindcss/colors"
+import { formatHex } from "culori"
 
 /** Bundled collections keep browsing available without an icon API. */
 export const iconSets = {
@@ -29,3 +31,18 @@ export const iconSets = {
 export const iconNames = Object.fromEntries(
   Object.entries(iconSets).map(([key, set]) => [key, Object.keys(set.data.icons).sort()]),
 ) as Record<keyof typeof iconSets, string[]>
+
+/** Tailwind's installed palette, converted to sRGB hex for the editable color field. */
+export const tailwindPalette = Object.entries(colors).flatMap(([name, shades]) =>
+  typeof shades === "object"
+    ? [
+        {
+          name,
+          shades: Object.entries(shades).map(([shade, color]) => ({
+            shade,
+            hex: formatHex(color)!,
+          })),
+        },
+      ]
+    : [],
+)
