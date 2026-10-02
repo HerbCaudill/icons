@@ -12,6 +12,7 @@
     "test:pw": "playwright test",
     "test:all": "pnpm typecheck && pnpm test run && pnpm test:pw",
     "format": "oxfmt .",
+    "metadata:refresh": "node scripts/vendorIconMetadata.ts",
     "lint": "oxlint ."
   },
   "dependencies": {

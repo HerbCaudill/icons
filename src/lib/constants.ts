@@ -4,6 +4,10 @@ import heroicons from "@iconify-json/heroicons/icons.json"
 import type { IconifyJSON } from "@iconify/types"
 import colors from "tailwindcss/colors"
 import { formatHex } from "culori"
+import tablerMetadata from "@/data/icon-metadata/tabler.json"
+import lucideMetadata from "@/data/icon-metadata/lucide.json"
+import customMetadata from "@/data/icon-metadata/custom.json"
+import { createIconSearchIndex } from "./createIconSearchIndex"
 
 /** Discrete icon sizes available in the header, in pixels. */
 export const iconSizeOptions = [24, 32, 40, 48, 56, 64, 72] as const
@@ -37,6 +41,13 @@ export const iconSets = {
 export const iconNames = Object.fromEntries(
   Object.entries(iconSets).map(([key, set]) => [key, Object.keys(set.data.icons).sort()]),
 ) as Record<keyof typeof iconSets, string[]>
+
+/** Vendored metadata is normalized once and stays available offline. */
+export const iconSearchIndexes = {
+  tabler: createIconSearchIndex(iconNames.tabler, tablerMetadata, customMetadata.tabler),
+  lucide: createIconSearchIndex(iconNames.lucide, lucideMetadata, customMetadata.lucide),
+  heroicons: createIconSearchIndex(iconNames.heroicons, {}, customMetadata.heroicons),
+}
 
 /** Tailwind's installed palette, converted to sRGB hex for the editable color field. */
 export const tailwindPalette = Object.entries(colors).flatMap(([name, shades]) =>

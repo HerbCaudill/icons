@@ -9,6 +9,23 @@ test("starts with the filter focused and filters Tabler icons as you type", asyn
   await expect(page.getByRole("button", { name: "Copy alarm", exact: true })).toHaveCount(0)
 })
 
+test("finds related concepts and prioritizes complete icon-name words", async ({ page }) => {
+  await page.goto("/")
+  const filter = page.getByRole("searchbox", { name: "Filter icons" })
+  await filter.fill("data")
+  await expect(page.getByRole("button", { name: "Copy table", exact: true })).toBeVisible()
+  await expect(page.getByRole("button", { name: "Copy chart-bar", exact: true })).toBeVisible()
+  await filter.fill("ai")
+  const names = await page
+    .getByRole("button", { name: /^Copy / })
+    .evaluateAll(buttons => buttons.map(button => button.getAttribute("aria-label")))
+  expect(names[0]).toBe("Copy ai")
+  expect(names.indexOf("Copy bookmark-ai")).toBeLessThan(names.indexOf("Copy mail-opened-filled"))
+  await page.getByRole("combobox", { name: "Icon set" }).selectOption("lucide")
+  await filter.fill("spreadsheet")
+  await expect(page.getByRole("button", { name: "Copy table", exact: true })).toBeVisible()
+})
+
 test("remembers the global icon set after reloading", async ({ page }) => {
   await page.goto("/")
   const selector = page.getByRole("combobox", { name: "Icon set" })

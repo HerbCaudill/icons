@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Glyph } from "@/components/Glyph"
 import { ColorPicker } from "@/components/ColorPicker"
 import { DotPicker } from "@/components/DotPicker"
-import { iconNames, iconSets, iconSizeOptions, iconStrokeOptions } from "@/lib/constants"
+import { iconSearchIndexes, iconSets, iconSizeOptions, iconStrokeOptions } from "@/lib/constants"
 import { filterIcons } from "@/lib/filterIcons"
 import { readIconSet } from "@/lib/readIconSet"
 import { saveIconSet } from "@/lib/saveIconSet"
@@ -24,7 +24,7 @@ export function App(
   const [iconStroke, setIconStroke] = useState(2)
   const filterRef = useRef<HTMLInputElement>(null)
   const collection = iconSets[set]
-  const results = filterIcons(iconNames[set], query)
+  const results = filterIcons(iconSearchIndexes[set], query)
 
   useEffect(() => {
     if (!message) return
@@ -88,15 +88,9 @@ export function App(
   return (
     <div className="app-shell">
       <header className="app-header">
-        <a className="wordmark" href="/" aria-label="Icons home">
-          <span className="brand-mark">
-            <Glyph name="category" size={23} />
-          </span>
-          icons
-        </a>
         <div className="search-controls">
           <div className="search-field">
-            <Glyph name="search" size={22} />
+            <Glyph name="search" size={18} />
             <input
               ref={filterRef}
               type="search"
@@ -113,7 +107,7 @@ export function App(
             />
             {query ? (
               <button className="clear-button" aria-label="Clear filter" onClick={clearFilter}>
-                <Glyph name="x" size={18} />
+                <Glyph name="x" size={16} />
               </button>
             ) : (
               <kbd title="Press / or ⌘K / Ctrl K to search">/</kbd>
@@ -156,7 +150,7 @@ export function App(
                   </option>
                 ))}
               </select>
-              <Glyph name="chevron-down" size={16} />
+              <Glyph name="chevron-down" size={14} />
             </div>
           </div>
         </div>

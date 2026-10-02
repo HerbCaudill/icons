@@ -4,7 +4,9 @@
 
 A small browser for Tabler, Lucide, and Heroicons. The filter is focused on page load, so you can start typing immediately. A global icon-set picker remembers your selection in localStorage under `icons:set`.
 
-Click an icon to copy its name directly (for example, `arrow-left`). The entire selected collection is shown at once. Search matches every word and ignores case, spaces, hyphens, and underscores. Press `/`, `⌘K`, or `Ctrl K` to focus the filter; press Escape in the filter to clear it.
+Click an icon to copy its name directly (for example, `arrow-left`). The entire selected collection is shown at once. Search matches every word across names, tags, use cases, and categories, ignoring case and separator differences. Exact icon names rank first, followed by complete name words, partial name matches, keywords, and categories. Searching `ai` puts `bookmark-ai` ahead of `mail-opened-filled`; searching `data` also finds tables and charts. Press `/`, `⌘K`, or `Ctrl K` to focus the filter; press Escape in the filter to clear it.
+
+Search metadata is vendored in `src/data/icon-metadata`. Add related concepts in `custom.json`; its entries supplement upstream metadata and survive refreshes. See [the metadata guide](src/data/icon-metadata/README.md) for sources, format, and update instructions. Typo correction is intentionally omitted.
 
 Use the header controls to resize icons or change their color. The color picker offers Tailwind shades and a custom hex input; the default is `#454545`. Dot controls offer sizes from 24 to 72 pixels in steps of 8, and Tabler outline weights from 1 to 2 in quarter steps.
 
@@ -22,7 +24,7 @@ The app uses React, TypeScript, Vite, Tailwind CSS, shadcn/ui, and locally bundl
 - `pnpm build` builds the production app.
 - `pnpm preview` serves the production build locally.
 
-The production build includes an installable PWA. After its first online visit finishes caching, the app, fonts, and all three icon sets work offline. The app and complete icon catalog use about 716 KB of compressed JavaScript on the first load. Clipboard copying requires a secure browser context, such as HTTPS or localhost.
+The production build includes an installable PWA. After its first online visit finishes caching, the app, fonts, metadata, and all three icon sets work offline. Clipboard copying requires a secure browser context, such as HTTPS or localhost.
 
 ## Icon licenses
 
