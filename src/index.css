@@ -250,7 +250,7 @@ h1 {
   display: block;
   width: 100%;
   font-family: var(--font-mono);
-  font-size: 14px;
+  font-size: 13px;
   color: #666;
   overflow: hidden;
   text-overflow: ellipsis;
