@@ -4,7 +4,8 @@ import { getIconData } from "@iconify/utils"
 import { Button } from "@/components/ui/button"
 import { Glyph } from "@/components/Glyph"
 import { ColorPicker } from "@/components/ColorPicker"
-import { iconNames, iconSets } from "@/lib/constants"
+import { DotPicker } from "@/components/DotPicker"
+import { iconNames, iconSets, iconSizeOptions, iconStrokeOptions } from "@/lib/constants"
 import { filterIcons } from "@/lib/filterIcons"
 import { readIconSet } from "@/lib/readIconSet"
 import { saveIconSet } from "@/lib/saveIconSet"
@@ -20,6 +21,7 @@ export function App(
   const [message, setMessage] = useState("")
   const [iconColor, setIconColor] = useState("#454545")
   const [iconSize, setIconSize] = useState(48)
+  const [iconStroke, setIconStroke] = useState(2)
   const filterRef = useRef<HTMLInputElement>(null)
   const collection = iconSets[set]
   const results = filterIcons(iconNames[set], query)
@@ -123,19 +125,23 @@ export function App(
         </div>
         <div className="header-controls">
           <ColorPicker value={iconColor} onChange={setIconColor} />
-          <div className="size-picker">
-            <label htmlFor="icon-size">Icon size</label>
-            <input
-              id="icon-size"
-              type="range"
-              min="24"
-              max="72"
-              step="2"
-              value={iconSize}
-              onChange={event => setIconSize(Number(event.target.value))}
+          <DotPicker
+            className="size-picker"
+            label="Icon size"
+            options={iconSizeOptions}
+            value={iconSize}
+            onChange={setIconSize}
+            suffix="px"
+          />
+          {set === "tabler" && (
+            <DotPicker
+              className="stroke-picker"
+              label="Stroke"
+              options={iconStrokeOptions}
+              value={iconStroke}
+              onChange={setIconStroke}
             />
-            <output htmlFor="icon-size">{iconSize}px</output>
-          </div>
+          )}
           <div className="set-picker">
             <label htmlFor="icon-set">Icon set</label>
             <div className="select-wrap">
@@ -159,7 +165,14 @@ export function App(
         {results.length ? (
           <div
             className="icon-grid"
-            style={{ color: iconColor, "--icon-size": `${iconSize}px` } as CSSProperties}
+            data-icon-set={set}
+            style={
+              {
+                color: iconColor,
+                "--icon-size": `${iconSize}px`,
+                "--icon-stroke": iconStroke,
+              } as CSSProperties
+            }
           >
             {results.map(name => {
               const icon = getIconData(collection.data, name)

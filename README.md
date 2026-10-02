@@ -1,10 +1,12 @@
 # Icons
 
+[icons.herbcaudill.com](https://icons.herbcaudill.com)
+
 A small browser for Tabler, Lucide, and Heroicons. The filter is focused on page load, so you can start typing immediately. A global icon-set picker remembers your selection in localStorage under `icons:set`.
 
 Click an icon to copy its name directly (for example, `arrow-left`). The entire selected collection is shown at once. Search matches every word and ignores case, spaces, hyphens, and underscores. Press `/`, `⌘K`, or `Ctrl K` to focus the filter; press Escape in the filter to clear it.
 
-Use the header controls to resize icons or change their color. The color picker offers Tailwind shades and a custom hex input; the default is `#454545`.
+Use the header controls to resize icons or change their color. The color picker offers Tailwind shades and a custom hex input; the default is `#454545`. Dot controls offer sizes from 24 to 72 pixels in steps of 8, and Tabler outline weights from 1 to 2 in quarter steps.
 
 ## Local development
 

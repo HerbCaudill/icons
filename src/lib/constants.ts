@@ -5,6 +5,12 @@ import type { IconifyJSON } from "@iconify/types"
 import colors from "tailwindcss/colors"
 import { formatHex } from "culori"
 
+/** Discrete icon sizes available in the header, in pixels. */
+export const iconSizeOptions = [24, 32, 40, 48, 56, 64, 72] as const
+
+/** Discrete Tabler outline weights available in the header. */
+export const iconStrokeOptions = [1, 1.25, 1.5, 1.75, 2] as const
+
 /** Bundled collections keep browsing available without an icon API. */
 export const iconSets = {
   tabler: {

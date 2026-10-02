@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, type CSSProperties } from "react"
 import { Popover } from "@base-ui/react/popover"
 import { tailwindPalette } from "@/lib/constants"
 
@@ -43,7 +43,10 @@ export function ColorPicker(
         </Popover.Trigger>
         <Popover.Portal>
           <Popover.Positioner className="color-positioner" sideOffset={8} align="end">
-            <Popover.Popup className="color-popup">
+            <Popover.Popup
+              className="color-popup"
+              style={{ "--palette-rows": tailwindPalette.length } as CSSProperties}
+            >
               <Popover.Title className="sr-only">Icon color</Popover.Title>
               <div className="hex-row">
                 <label htmlFor="hex-color">Hex color</label>
@@ -83,16 +86,9 @@ export function ColorPicker(
                   Enter 3 or 6 hex digits.
                 </p>
               )}
-              <div className="palette-shades" aria-hidden="true">
-                <span />
-                {tailwindPalette[0].shades.map(({ shade }) => (
-                  <span key={shade}>{shade}</span>
-                ))}
-              </div>
               <div className="tailwind-palette">
                 {tailwindPalette.map(({ name, shades }) => (
                   <div className="palette-row" key={name}>
-                    <span>{name}</span>
                     {shades.map(({ shade, hex }) => (
                       <button
                         key={shade}
