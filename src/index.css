@@ -249,7 +249,7 @@ h1 {
 .icon-card span {
   display: block;
   width: 100%;
-  font-family: var(--font-mono);
+  font-family: "IBM Plex Sans Condensed", "IBM Plex Sans", sans-serif;
   font-size: 12px;
   color: #666;
   overflow: hidden;
