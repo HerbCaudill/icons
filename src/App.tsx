@@ -150,7 +150,7 @@ export function App(
                   title={`Copy ${set}:${name}`}
                   onClick={() => void copyName(name)}
                 >
-                  {icon && <Icon icon={icon} width={60} height={60} aria-hidden="true" />}
+                  {icon && <Icon icon={icon} width={48} height={48} aria-hidden="true" />}
                   <span>{name}</span>
                 </button>
               )
