@@ -6,7 +6,7 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   reporter: "list",
-  use: { baseURL: "http://localhost:5179", trace: "retain-on-failure" },
+  use: { baseURL: "http://localhost:5179", trace: "on-first-retry" },
   projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
   webServer: {
     command: "pnpm dev --host 127.0.0.1",

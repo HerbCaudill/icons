@@ -18,8 +18,8 @@ export default defineConfig({
         description: "A quiet place to find your next icon.",
         start_url: "/",
         display: "standalone",
-        background_color: "#fafaf8",
-        theme_color: "#fafaf8",
+        background_color: "#fafafa",
+        theme_color: "#fafafa",
         icons: [
           { src: "/icon-192.png", sizes: "192x192", type: "image/png" },
           { src: "/icon-512.png", sizes: "512x512", type: "image/png", purpose: "any maskable" },

@@ -2,7 +2,7 @@
 
 A small browser for Tabler, Lucide, and Heroicons. The filter is focused on page load, so you can start typing immediately. A global icon-set picker remembers your selection in localStorage under `icons:set`.
 
-Click an icon to preview it and copy its Iconify name (for example, `tabler:arrow-left`) or standalone SVG. Search matches every word and ignores case, spaces, hyphens, and underscores. Press `/`, `⌘K`, or `Ctrl K` to focus the filter; press Escape in the filter to clear it.
+Click an icon to copy its Iconify name directly (for example, `tabler:arrow-left`). The entire selected collection is shown at once. Search matches every word and ignores case, spaces, hyphens, and underscores. Press `/`, `⌘K`, or `Ctrl K` to focus the filter; press Escape in the filter to clear it.
 
 ## Local development
 
@@ -18,7 +18,7 @@ The app uses React, TypeScript, Vite, Tailwind CSS, shadcn/ui, and locally bundl
 - `pnpm build` builds the production app.
 - `pnpm preview` serves the production build locally.
 
-The production build includes an installable PWA. After its first online visit finishes caching, the app, fonts, and all three icon sets work offline. The complete icon catalog adds about 680 KB of compressed JavaScript to the first load. SVG copying requires a secure browser context, such as HTTPS or localhost.
+The production build includes an installable PWA. After its first online visit finishes caching, the app, fonts, and all three icon sets work offline. The app and complete icon catalog use about 665 KB of compressed JavaScript on the first load. Clipboard copying requires a secure browser context, such as HTTPS or localhost.
 
 ## Icon licenses
 

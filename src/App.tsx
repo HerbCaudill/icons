@@ -3,31 +3,27 @@ import { Icon } from "@iconify/react"
 import { getIconData } from "@iconify/utils"
 import { Button } from "@/components/ui/button"
 import { Glyph } from "@/components/Glyph"
-import { IconPreview } from "@/components/IconPreview"
 import { iconNames, iconSets } from "@/lib/constants"
 import { filterIcons } from "@/lib/filterIcons"
 import { readIconSet } from "@/lib/readIconSet"
 import { saveIconSet } from "@/lib/saveIconSet"
 import type { IconSet } from "@/lib/types"
 
-/** Browse one collection with an immediately available keyboard filter. */
+/** Browse an entire collection and copy an icon name with one click. */
 export function App(
   /** No external configuration is required. */
   _props: Props,
 ) {
   const [set, setSet] = useState<IconSet>(readIconSet)
   const [query, setQuery] = useState("")
-  const [limit, setLimit] = useState(160)
-  const [selected, setSelected] = useState<string | null>(null)
+  const [message, setMessage] = useState("")
   const filterRef = useRef<HTMLInputElement>(null)
   const collection = iconSets[set]
-  const names = iconNames[set]
-  const results = filterIcons(names, query)
+  const results = filterIcons(iconNames[set], query)
 
   useEffect(() => {
-    /** Focus the filter from anywhere outside a text field or dialog. */
+    /** Focus the filter from anywhere outside a text field. */
     function onKeyDown(event: KeyboardEvent) {
-      if (selected) return
       const target = event.target as HTMLElement
       const editing =
         target instanceof HTMLInputElement ||
@@ -43,27 +39,40 @@ export function App(
       }
       if (event.key === "Escape" && target === filterRef.current) {
         setQuery("")
-        setLimit(160)
+        setMessage("")
       }
     }
     window.addEventListener("keydown", onKeyDown)
     return () => window.removeEventListener("keydown", onKeyDown)
-  }, [selected])
+  }, [])
 
   /** Apply one collection globally and remember it for future visits. */
   function changeSet(next: IconSet) {
     setSet(next)
     saveIconSet(next)
-    setLimit(160)
-    setSelected(null)
+    setMessage("")
     filterRef.current?.focus()
   }
 
   /** Reset the filter and keep the next keystroke in the search field. */
   function clearFilter() {
     setQuery("")
-    setLimit(160)
+    setMessage("")
     filterRef.current?.focus()
+  }
+
+  /** Copy the canonical Iconify name directly from the clicked card. */
+  async function copyName(
+    /** Name within the selected collection. */
+    name: string,
+  ) {
+    const fullName = `${set}:${name}`
+    try {
+      await navigator.clipboard.writeText(fullName)
+      setMessage(`Copied ${fullName}`)
+    } catch {
+      setMessage(`Couldn't copy ${fullName}. Try again or copy the name manually.`)
+    }
   }
 
   return (
@@ -73,8 +82,32 @@ export function App(
           <span className="brand-mark">
             <Glyph name="category" size={23} />
           </span>
-          icons<span className="wordmark-dot">.</span>
+          icons
         </a>
+        <div className="search-field">
+          <Glyph name="search" size={22} />
+          <input
+            ref={filterRef}
+            type="search"
+            aria-label="Filter icons"
+            autoFocus
+            placeholder={`Search ${collection.label} icons…`}
+            value={query}
+            onChange={event => {
+              setQuery(event.target.value)
+              setMessage("")
+            }}
+            autoComplete="off"
+            spellCheck={false}
+          />
+          {query ? (
+            <button className="clear-button" aria-label="Clear filter" onClick={clearFilter}>
+              <Glyph name="x" size={18} />
+            </button>
+          ) : (
+            <kbd title="Press / or ⌘K / Ctrl K to search">/</kbd>
+          )}
+        </div>
         <div className="set-picker">
           <label htmlFor="icon-set">Icon set</label>
           <div className="select-wrap">
@@ -94,87 +127,39 @@ export function App(
         </div>
       </header>
       <main>
-        <section className="intro">
-          <div className="eyebrow">
-            <span className="small-dot" />A little less searching
-          </div>
-          <h1>Find your next icon.</h1>
-          <p>Just start typing. The right shape is a few keystrokes away.</p>
-        </section>
-        <div className="search-toolbar">
-          <div className="search-field">
-            <Glyph name="search" size={22} />
-            <input
-              ref={filterRef}
-              type="search"
-              aria-label="Filter icons"
-              autoFocus
-              placeholder={`Search ${collection.label} icons…`}
-              value={query}
-              onChange={event => {
-                setQuery(event.target.value)
-                setLimit(160)
-              }}
-              autoComplete="off"
-              spellCheck={false}
-            />
-            {query ? (
-              <button className="clear-button" aria-label="Clear filter" onClick={clearFilter}>
-                <Glyph name="x" size={18} />
-              </button>
-            ) : (
-              <kbd>/</kbd>
-            )}
-          </div>
-        </div>
         <div className="results-heading">
           <div>
-            <h2>{collection.label}</h2>
+            <h1>{collection.label}</h1>
             <span className="count" role="status">
               {results.length.toLocaleString()} {query ? "matches" : "icons"}
             </span>
           </div>
-          <span className="results-hint">
-            Click an icon to preview & copy
-            <Glyph name="arrow-up-right" size={15} />
+          <span className="copy-status" role="status">
+            {message || "Click an icon to copy its name"}
           </span>
         </div>
         {results.length ? (
-          <>
-            <div className="icon-grid">
-              {results.slice(0, limit).map(name => {
-                const icon = getIconData(collection.data, name)
-                return (
-                  <button
-                    className="icon-card"
-                    key={name}
-                    aria-label={`Preview ${name}`}
-                    title={name}
-                    onClick={() => setSelected(name)}
-                  >
-                    {icon && <Icon icon={icon} width={30} height={30} aria-hidden="true" />}
-                    <span>{name}</span>
-                  </button>
-                )
-              })}
-            </div>
-            <div className="load-more">
-              <span>
-                Showing {Math.min(limit, results.length).toLocaleString()} of{" "}
-                {results.length.toLocaleString()}
-              </span>
-              {results.length > limit && (
-                <Button variant="outline" onClick={() => setLimit(current => current + 160)}>
-                  Show more icons
-                  <Glyph name="chevron-down" size={16} />
-                </Button>
-              )}
-            </div>
-          </>
+          <div className="icon-grid">
+            {results.map(name => {
+              const icon = getIconData(collection.data, name)
+              return (
+                <button
+                  className="icon-card"
+                  key={name}
+                  aria-label={`Copy ${name}`}
+                  title={`Copy ${set}:${name}`}
+                  onClick={() => void copyName(name)}
+                >
+                  {icon && <Icon icon={icon} width={60} height={60} aria-hidden="true" />}
+                  <span>{name}</span>
+                </button>
+              )
+            })}
+          </div>
         ) : (
           <div className="empty-state">
             <Glyph name="search-off" size={40} />
-            <h3>No icons found</h3>
+            <h2>No icons found</h2>
             <p>Try a shorter name or choose another icon set.</p>
             <Button variant="outline" onClick={clearFilter}>
               Clear filter
@@ -182,26 +167,6 @@ export function App(
           </div>
         )}
       </main>
-      <footer>
-        <span>Small shapes. Endless possibilities.</span>
-        <div>
-          <span>
-            <kbd>/</kbd> or <kbd>⌘ / Ctrl K</kbd> to search
-          </span>
-          <a href={collection.url} target="_blank" rel="noreferrer">
-            {collection.label} · {collection.license}
-            <Glyph name="arrow-up-right" size={14} />
-          </a>
-        </div>
-      </footer>
-      {selected && (
-        <IconPreview
-          key={`${set}:${selected}`}
-          name={selected}
-          set={set}
-          onClose={() => setSelected(null)}
-        />
-      )}
     </div>
   )
 }

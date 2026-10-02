@@ -5,8 +5,8 @@ test("starts with the filter focused and filters Tabler icons as you type", asyn
   const filter = page.getByRole("searchbox", { name: "Filter icons" })
   await expect(filter).toBeFocused()
   await page.keyboard.type("arrow left")
-  await expect(page.getByRole("button", { name: "Preview arrow-left", exact: true })).toBeVisible()
-  await expect(page.getByRole("button", { name: "Preview alarm", exact: true })).toHaveCount(0)
+  await expect(page.getByRole("button", { name: "Copy arrow-left", exact: true })).toBeVisible()
+  await expect(page.getByRole("button", { name: "Copy alarm", exact: true })).toHaveCount(0)
 })
 
 test("remembers the global icon set after reloading", async ({ page }) => {
@@ -18,7 +18,7 @@ test("remembers the global icon set after reloading", async ({ page }) => {
   await expect(selector).toHaveValue("lucide")
   await expect(page.getByRole("searchbox", { name: "Filter icons" })).toBeFocused()
   await page.keyboard.type("alarm clock")
-  await expect(page.getByRole("button", { name: "Preview alarm-clock", exact: true })).toBeVisible()
+  await expect(page.getByRole("button", { name: "Copy alarm-clock", exact: true })).toBeVisible()
 })
 
 test("uses Tabler when the stored set is invalid or storage is unavailable", async ({ page }) => {
@@ -41,12 +41,10 @@ test("uses Tabler when the stored set is invalid or storage is unavailable", asy
   await page.getByRole("combobox", { name: "Icon set" }).selectOption("heroicons")
   await expect(page.getByRole("searchbox", { name: "Filter icons" })).toBeFocused()
   await page.keyboard.type("academic")
-  await expect(
-    page.getByRole("button", { name: "Preview academic-cap", exact: true }),
-  ).toBeVisible()
+  await expect(page.getByRole("button", { name: "Copy academic-cap", exact: true })).toBeVisible()
 })
 
-test("copies an icon and returns to filtering with keyboard shortcuts", async ({
+test("copies an icon name on click and returns to filtering with keyboard shortcuts", async ({
   page,
   context,
 }) => {
@@ -54,17 +52,11 @@ test("copies an icon and returns to filtering with keyboard shortcuts", async ({
   await page.goto("/")
   const filter = page.getByRole("searchbox", { name: "Filter icons" })
   await filter.fill("arrow-left")
-  await page.getByRole("button", { name: "Preview arrow-left", exact: true }).click()
-  const dialog = page.getByRole("dialog")
-  await expect(dialog).toBeVisible()
-  await dialog.getByRole("button", { name: "Copy name" }).click()
+  await page.getByRole("button", { name: "Copy arrow-left", exact: true }).click()
   await expect
     .poll(() => page.evaluate(() => navigator.clipboard.readText()))
     .toBe("tabler:arrow-left")
-  await dialog.getByRole("button", { name: "Copy SVG" }).click()
-  await expect.poll(() => page.evaluate(() => navigator.clipboard.readText())).toContain("<svg")
-  await page.keyboard.press("Escape")
-  await expect(dialog).toHaveCount(0)
+  await expect(page.getByText("Copied tabler:arrow-left", { exact: true })).toBeVisible()
   await page.keyboard.press("/")
   await expect(filter).toBeFocused()
   await page.keyboard.press("Escape")
