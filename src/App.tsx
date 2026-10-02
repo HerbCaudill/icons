@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState, type CSSProperties } from "react"
 import { Icon } from "@iconify/react"
 import { getIconData } from "@iconify/utils"
 import { Button } from "@/components/ui/button"
@@ -17,9 +17,17 @@ export function App(
   const [set, setSet] = useState<IconSet>(readIconSet)
   const [query, setQuery] = useState("")
   const [message, setMessage] = useState("")
+  const [iconColor, setIconColor] = useState("#454545")
+  const [iconSize, setIconSize] = useState(48)
   const filterRef = useRef<HTMLInputElement>(null)
   const collection = iconSets[set]
   const results = filterIcons(iconNames[set], query)
+
+  useEffect(() => {
+    if (!message) return
+    const timeout = window.setTimeout(() => setMessage(""), 2500)
+    return () => window.clearTimeout(timeout)
+  }, [message])
 
   useEffect(() => {
     /** Focus the filter from anywhere outside a text field. */
@@ -61,17 +69,16 @@ export function App(
     filterRef.current?.focus()
   }
 
-  /** Copy the canonical Iconify name directly from the clicked card. */
+  /** Copy the icon name directly from the clicked card. */
   async function copyName(
     /** Name within the selected collection. */
     name: string,
   ) {
-    const fullName = `${set}:${name}`
     try {
-      await navigator.clipboard.writeText(fullName)
-      setMessage(`Copied ${fullName}`)
+      await navigator.clipboard.writeText(name)
+      setMessage(`Copied ${name}`)
     } catch {
-      setMessage(`Couldn't copy ${fullName}. Try again or copy the name manually.`)
+      setMessage(`Couldn't copy ${name}. Try again or copy the name manually.`)
     }
   }
 
@@ -84,62 +91,83 @@ export function App(
           </span>
           icons
         </a>
-        <div className="search-field">
-          <Glyph name="search" size={22} />
-          <input
-            ref={filterRef}
-            type="search"
-            aria-label="Filter icons"
-            autoFocus
-            placeholder={`Search ${collection.label} icons…`}
-            value={query}
-            onChange={event => {
-              setQuery(event.target.value)
-              setMessage("")
-            }}
-            autoComplete="off"
-            spellCheck={false}
-          />
-          {query ? (
-            <button className="clear-button" aria-label="Clear filter" onClick={clearFilter}>
-              <Glyph name="x" size={18} />
-            </button>
-          ) : (
-            <kbd title="Press / or ⌘K / Ctrl K to search">/</kbd>
-          )}
+        <div className="search-controls">
+          <div className="search-field">
+            <Glyph name="search" size={22} />
+            <input
+              ref={filterRef}
+              type="search"
+              aria-label="Filter icons"
+              autoFocus
+              placeholder={`Search ${collection.label} icons…`}
+              value={query}
+              onChange={event => {
+                setQuery(event.target.value)
+                setMessage("")
+              }}
+              autoComplete="off"
+              spellCheck={false}
+            />
+            {query ? (
+              <button className="clear-button" aria-label="Clear filter" onClick={clearFilter}>
+                <Glyph name="x" size={18} />
+              </button>
+            ) : (
+              <kbd title="Press / or ⌘K / Ctrl K to search">/</kbd>
+            )}
+          </div>
+          <span className="count" role="status">
+            {results.length.toLocaleString()} {query ? "matches" : "icons"}
+          </span>
         </div>
-        <div className="set-picker">
-          <label htmlFor="icon-set">Icon set</label>
-          <div className="select-wrap">
-            <select
-              id="icon-set"
-              value={set}
-              onChange={event => changeSet(event.target.value as IconSet)}
-            >
-              {Object.entries(iconSets).map(([key, value]) => (
-                <option key={key} value={key}>
-                  {value.label}
-                </option>
-              ))}
-            </select>
-            <Glyph name="chevron-down" size={16} />
+        <div className="header-controls">
+          <label className="color-picker" htmlFor="icon-color">
+            Icon color
+            <input
+              id="icon-color"
+              type="color"
+              value={iconColor}
+              onChange={event => setIconColor(event.target.value)}
+            />
+          </label>
+          <div className="size-picker">
+            <label htmlFor="icon-size">Icon size</label>
+            <input
+              id="icon-size"
+              type="range"
+              min="24"
+              max="72"
+              step="2"
+              value={iconSize}
+              onChange={event => setIconSize(Number(event.target.value))}
+            />
+            <output htmlFor="icon-size">{iconSize}px</output>
+          </div>
+          <div className="set-picker">
+            <label htmlFor="icon-set">Icon set</label>
+            <div className="select-wrap">
+              <select
+                id="icon-set"
+                value={set}
+                onChange={event => changeSet(event.target.value as IconSet)}
+              >
+                {Object.entries(iconSets).map(([key, value]) => (
+                  <option key={key} value={key}>
+                    {value.label}
+                  </option>
+                ))}
+              </select>
+              <Glyph name="chevron-down" size={16} />
+            </div>
           </div>
         </div>
       </header>
-      <main>
-        <div className="results-heading">
-          <div>
-            <h1>{collection.label}</h1>
-            <span className="count" role="status">
-              {results.length.toLocaleString()} {query ? "matches" : "icons"}
-            </span>
-          </div>
-          <span className="copy-status" role="status">
-            {message || "Click an icon to copy its name"}
-          </span>
-        </div>
+      <main aria-label={`${collection.label} icons`}>
         {results.length ? (
-          <div className="icon-grid">
+          <div
+            className="icon-grid"
+            style={{ color: iconColor, "--icon-size": `${iconSize}px` } as CSSProperties}
+          >
             {results.map(name => {
               const icon = getIconData(collection.data, name)
               return (
@@ -147,10 +175,12 @@ export function App(
                   className="icon-card"
                   key={name}
                   aria-label={`Copy ${name}`}
-                  title={`Copy ${set}:${name}`}
+                  title={`Copy ${name}`}
                   onClick={() => void copyName(name)}
                 >
-                  {icon && <Icon icon={icon} width={48} height={48} aria-hidden="true" />}
+                  {icon && (
+                    <Icon icon={icon} width={iconSize} height={iconSize} aria-hidden="true" />
+                  )}
                   <span>{name}</span>
                 </button>
               )
@@ -167,6 +197,9 @@ export function App(
           </div>
         )}
       </main>
+      <div className="copy-toast" role="status">
+        {message}
+      </div>
     </div>
   )
 }

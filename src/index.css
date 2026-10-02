@@ -80,8 +80,7 @@ select:focus-visible {
   position: sticky;
   top: 0;
   z-index: 10;
-  display: grid;
-  grid-template-columns: 130px minmax(0, 1fr) auto;
+  display: flex;
   align-items: center;
   gap: 28px;
   padding: 16px 0;
@@ -89,12 +88,60 @@ select:focus-visible {
   background: var(--background);
 }
 .wordmark {
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   font-size: 28px;
   font-weight: 600;
   letter-spacing: -1.1px;
   text-decoration: none;
+}
+.search-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+}
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+.color-picker,
+.size-picker {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+  font-size: 14px;
+  color: #666;
+}
+.color-picker input {
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 3px;
+  background: #fff;
+  cursor: pointer;
+}
+.color-picker input::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+.color-picker input::-webkit-color-swatch {
+  border: 0;
+  border-radius: 3px;
+}
+.size-picker input {
+  width: 96px;
+  accent-color: #454545;
+  cursor: pointer;
+}
+.size-picker output {
+  width: 34px;
+  font-size: 12px;
+  font-family: var(--font-mono);
 }
 .brand-mark {
   display: grid;
@@ -137,6 +184,9 @@ select:focus-visible {
   pointer-events: none;
 }
 .search-field {
+  flex: 1;
+  min-width: 0;
+  max-width: 420px;
   display: flex;
   align-items: center;
   gap: 12px;
@@ -187,24 +237,8 @@ kbd {
   height: 28px;
   width: 28px;
 }
-.results-heading {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 16px;
-  padding: 20px 0;
-}
-.results-heading > div {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-h1 {
-  margin: 0;
-  font-weight: 500;
-  font-size: 17px;
-}
 .count {
+  flex-shrink: 0;
   font-size: 12px;
   font-family: var(--font-mono);
   background: #ededed;
@@ -212,20 +246,40 @@ h1 {
   padding: 4px 8px;
   border-radius: 5px;
 }
-.copy-status {
+.copy-toast {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 20;
+  max-width: calc(100vw - 40px);
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  padding: 10px 14px;
+  background: #fff;
+  box-shadow: 0 3px 12px #0000000d;
   font-size: 13px;
   color: #666;
   overflow-wrap: anywhere;
+  pointer-events: none;
+}
+.copy-toast:empty {
+  visibility: hidden;
+}
+main {
+  padding-top: 16px;
 }
 .icon-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(128px, 1fr));
-  gap: 10px;
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(max(104px, calc(var(--icon-size) * 2.6667)), 1fr)
+  );
+  gap: max(6px, calc(var(--icon-size) / 4.8));
 }
 .icon-card {
-  height: 120px;
+  height: max(84px, calc(var(--icon-size) * 2.5));
   min-width: 0;
-  padding: 16px 8px 11px;
+  padding: calc(var(--icon-size) / 3) calc(var(--icon-size) / 6) calc(var(--icon-size) * 0.2292);
   border: 1px solid #e1e1e1;
   border-radius: 6px;
   background: #fff;
@@ -233,18 +287,17 @@ h1 {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 16px;
-  color: #333;
-  transition:
-    background 0.13s,
-    border-color 0.13s;
+  gap: max(8px, calc(var(--icon-size) / 3));
+  color: inherit;
+  transition: border-color 0.13s;
   content-visibility: auto;
-  contain-intrinsic-size: auto 120px;
+  contain-intrinsic-size: auto max(84px, calc(var(--icon-size) * 2.5));
 }
 .icon-card:hover {
-  background: #f2f2f2;
   border-color: #999;
-  color: #111;
+}
+.icon-card > svg {
+  flex-shrink: 0;
 }
 .icon-card span {
   display: block;
@@ -278,19 +331,6 @@ h1 {
   .app-shell {
     padding: 0 16px 16px;
   }
-  .app-header {
-    grid-template-columns: 1fr auto;
-    gap: 12px;
-    padding: 12px 0;
-  }
-  .search-field {
-    grid-column: 1 / -1;
-    grid-row: 2;
-  }
-  .set-picker {
-    grid-column: 2;
-    grid-row: 1;
-  }
   .set-picker label {
     display: none;
   }
@@ -299,14 +339,51 @@ h1 {
     height: 40px;
   }
   .icon-grid {
-    grid-template-columns: repeat(auto-fill, minmax(112px, 1fr));
-    gap: 8px;
+    grid-template-columns: repeat(
+      auto-fill,
+      minmax(max(96px, calc(var(--icon-size) * 2.3333)), 1fr)
+    );
+    gap: max(6px, calc(var(--icon-size) / 6));
   }
-  .results-heading {
-    align-items: flex-start;
+}
+@media (max-width: 1050px) {
+  .app-header {
     flex-wrap: wrap;
-    gap: 8px;
-    padding: 16px 0;
+    gap: 12px;
+    padding: 12px 0;
+  }
+  .header-controls {
+    margin-left: auto;
+    gap: 16px;
+  }
+  .search-controls {
+    order: 1;
+    flex-basis: 100%;
+  }
+  .search-field {
+    max-width: 420px;
+  }
+}
+@media (max-width: 650px) {
+  .header-controls {
+    display: contents;
+  }
+  .color-picker,
+  .size-picker {
+    order: 2;
+    font-size: 12px;
+  }
+  .size-picker {
+    margin-left: auto;
+  }
+  .set-picker {
+    margin-left: auto;
+  }
+  .size-picker input {
+    width: 64px;
+  }
+  .wordmark {
+    font-size: 24px;
   }
 }
 @media (prefers-reduced-motion: reduce) {

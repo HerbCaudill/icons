@@ -2,7 +2,7 @@
 
 A small browser for Tabler, Lucide, and Heroicons. The filter is focused on page load, so you can start typing immediately. A global icon-set picker remembers your selection in localStorage under `icons:set`.
 
-Click an icon to copy its Iconify name directly (for example, `tabler:arrow-left`). The entire selected collection is shown at once. Search matches every word and ignores case, spaces, hyphens, and underscores. Press `/`, `⌘K`, or `Ctrl K` to focus the filter; press Escape in the filter to clear it.
+Click an icon to copy its name directly (for example, `arrow-left`). The entire selected collection is shown at once. Search matches every word and ignores case, spaces, hyphens, and underscores. Press `/`, `⌘K`, or `Ctrl K` to focus the filter; press Escape in the filter to clear it.
 
 ## Local development
 
