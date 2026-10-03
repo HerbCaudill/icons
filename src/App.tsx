@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Glyph } from "@/components/Glyph"
 import { ColorPicker } from "@/components/ColorPicker"
 import { DotPicker } from "@/components/DotPicker"
+import { HeaderSettings } from "@/components/HeaderSettings"
 import { iconSearchIndexes, iconSets, iconSizeOptions, iconStrokeOptions } from "@/lib/constants"
 import { filterIcons } from "@/lib/filterIcons"
 import { readIconSet } from "@/lib/readIconSet"
@@ -25,6 +26,14 @@ export function App(
   const filterRef = useRef<HTMLInputElement>(null)
   const collection = iconSets[set]
   const results = filterIcons(iconSearchIndexes[set], query)
+
+  useEffect(() => {
+    // Focus after layout as well as at mount, including standalone mobile launches.
+    const frame = window.requestAnimationFrame(() =>
+      filterRef.current?.focus({ preventScroll: true }),
+    )
+    return () => window.cancelAnimationFrame(frame)
+  }, [])
 
   useEffect(() => {
     if (!message) return
@@ -117,43 +126,45 @@ export function App(
             {results.length.toLocaleString()} {query ? "matches" : "icons"}
           </span>
         </div>
-        <div className="header-controls">
-          <ColorPicker value={iconColor} onChange={setIconColor} />
-          <DotPicker
-            className="size-picker"
-            label="Icon size"
-            options={iconSizeOptions}
-            value={iconSize}
-            onChange={setIconSize}
-            suffix="px"
-          />
-          {set === "tabler" && (
+        <HeaderSettings>
+          <div className="header-controls">
+            <ColorPicker value={iconColor} onChange={setIconColor} />
             <DotPicker
-              className="stroke-picker"
-              label="Stroke"
-              options={iconStrokeOptions}
-              value={iconStroke}
-              onChange={setIconStroke}
+              className="size-picker"
+              label="Icon size"
+              options={iconSizeOptions}
+              value={iconSize}
+              onChange={setIconSize}
+              suffix="px"
             />
-          )}
-          <div className="set-picker">
-            <label htmlFor="icon-set">Icon set</label>
-            <div className="select-wrap">
-              <select
-                id="icon-set"
-                value={set}
-                onChange={event => changeSet(event.target.value as IconSet)}
-              >
-                {Object.entries(iconSets).map(([key, value]) => (
-                  <option key={key} value={key}>
-                    {value.label}
-                  </option>
-                ))}
-              </select>
-              <Glyph name="chevron-down" size={14} />
+            {set === "tabler" && (
+              <DotPicker
+                className="stroke-picker"
+                label="Stroke"
+                options={iconStrokeOptions}
+                value={iconStroke}
+                onChange={setIconStroke}
+              />
+            )}
+            <div className="set-picker">
+              <label htmlFor="icon-set">Icon set</label>
+              <div className="select-wrap">
+                <select
+                  id="icon-set"
+                  value={set}
+                  onChange={event => changeSet(event.target.value as IconSet)}
+                >
+                  {Object.entries(iconSets).map(([key, value]) => (
+                    <option key={key} value={key}>
+                      {value.label}
+                    </option>
+                  ))}
+                </select>
+                <Glyph name="chevron-down" size={14} />
+              </div>
             </div>
           </div>
-        </div>
+        </HeaderSettings>
       </header>
       <main aria-label={`${collection.label} icons`}>
         {results.length ? (
