@@ -6,6 +6,7 @@ import { Glyph } from "@/components/Glyph"
 import { ColorPicker } from "@/components/ColorPicker"
 import { DotPicker } from "@/components/DotPicker"
 import { HeaderSettings } from "@/components/HeaderSettings"
+import { UpdateNotice } from "@/components/UpdateNotice"
 import { iconSearchIndexes, iconSets, iconSizeOptions, iconStrokeOptions } from "@/lib/constants"
 import { filterIcons } from "@/lib/filterIcons"
 import { readIconSet } from "@/lib/readIconSet"
@@ -211,6 +212,7 @@ export function App(
       <div className="copy-toast" role="status">
         {message}
       </div>
+      <UpdateNotice />
     </div>
   )
 }
