@@ -9,8 +9,8 @@ export default defineConfig({
   use: { baseURL: "http://localhost:5179", trace: "on-first-retry" },
   projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
   webServer: {
-    command: "pnpm dev --host 127.0.0.1",
+    command: "pnpm dev:app --host 127.0.0.1",
     url: "http://localhost:5179",
-    reuseExistingServer: !process.env.CI,
+    reuseExistingServer: false,
   },
 })
